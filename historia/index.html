@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuestro Camino ❤️</title>
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Segoe UI',sans-serif;
+  background:
+    radial-gradient(circle at top,#ffd1dc,transparent 60%),
+    linear-gradient(135deg,#1d2671,#c33764);
+  color:white;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  text-align:center;
+  overflow-y:auto;
+  padding:20px;
+}
+
+.screen{
+  display:none;
+  width:100%;
+  max-width:720px;
+  padding:35px;
+  border-radius:30px;
+  background:rgba(255,255,255,0.18);
+  backdrop-filter:blur(14px);
+  box-shadow:0 0 45px rgba(255,77,136,.45);
+  animation:fade 1.1s ease;
+  margin-bottom:40px;
+}
+
+.active{display:block}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(25px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+button{
+  background:linear-gradient(135deg,#ff4d88,#ff8fb3);
+  border:none;
+  border-radius:40px;
+  padding:15px 36px;
+  font-size:18px;
+  color:white;
+  margin:15px auto;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,0,0,.25);
+  display:block;
+}
+
+button:hover{transform:scale(1.05)}
+
+.choices button{width:100%}
+
+img{
+  width:100%;
+  max-width:420px;
+  max-height:260px;
+  object-fit:cover;
+  border-radius:22px;
+  margin:20px auto;
+  display:block;
+  box-shadow:0 0 30px rgba(255,255,255,.4);
+}
+
+.small{opacity:.85;font-size:15px}
+
+#letter,#reflection{
+  white-space: pre-wrap;
+}
+
+
+#sceneText{
+  margin-top:15px;
+  font-size:18px;
+  line-height:1.6;
+}
+
+.particle{
+  position:fixed;
+  bottom:-10px;
+  pointer-events:none;
+  animation:float linear forwards;
+}
+
+@keyframes float{
+  to{transform:translateY(-120vh);opacity:0}
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎵 Música -->
+<audio id="musicHappy" loop>
+  <source src="Perfect.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="musicSad" loop>
+  <source src="sad.mp3" type="audio/mpeg">
+</audio>
+
+<!-- PANTALLA 1 -->
+<div id="s1" class="screen active">
+  <h1>🌙 Nuestro Camino</h1>
+  <p>
+    Esta no es una historia cualquiera.<br><br>
+    Es la nuestra.<br><br>
+    Comenzó un día como:<br>
+    <strong>26/ 9 /2025</strong>
+  </p>
+  <button onclick="startGame()">Comenzar ✨</button>
+</div>
+
+<!-- PANTALLA 2 -->
+<div id="s2" class="screen">
+  <p>
+    Desde ese momento,<br>
+    algo cambió en mí.<br><br>
+    No fue perfecto.<br>
+    Pero fue real.
+  </p>
+  <button onclick="next('s3')">Seguir 🤍</button>
+</div>
+
+<!-- PANTALLA 3 -->
+<div id="s3" class="screen">
+  <p>
+    Compartimos risas, peleas,<br>
+    silencios,<br>
+    y momentos que solo tú y yo entendemos.
+  </p>
+  <button onclick="next('s4')">Continuar 💫</button>
+</div>
+
+<!-- DECISIÓN -->
+<div id="s4" class="screen">
+  <p>Y ahora el camino se divide…</p>
+  <div class="choices">
+    <button onclick="choose('together')">Caminar juntos 🤍</button>
+    <button onclick="choose('alone')">Caminar sola 🌙</button>
+  </div>
+</div>
+
+<!-- ESCENA -->
+<div id="s5" class="screen">
+  <img id="sceneImg">
+  <p id="sceneText"></p>
+  <button onclick="next('s6')">Seguir ✨</button>
+</div>
+
+<!-- REFLEXIÓN -->
+<div id="s6" class="screen">
+  <p id="reflection"></p>
+  <button onclick="next('s7')">Continuar ❤️</button>
+</div>
+
+<!-- CARTA FINAL -->
+<div id="s7" class="screen">
+  <h2>💌 Para ti</h2>
+
+  <!-- IMAGEN FINAL -->
+  <img src="final.png" alt="Imagen final">
+
+  <p id="letter"></p>
+  <p class="small">ATT: <strong>Jose M.</strong></p>
+</div>
+
+<script>
+let choice="", i=0, writing=false;
+
+const happy=document.getElementById("musicHappy");
+const sad=document.getElementById("musicSad");
+
+happy.volume=0.65;
+sad.volume=0.6;
+
+const texts={
+  together:{
+    img:"juntos.jpg",
+    sceneText:"Dos personas decidieron no soltarse ❤️",
+    reflection:
+      "Elegir caminar juntos\n"+
+      "es elegir todos los días.\n\n"+
+      "Y yo te elijo.\n"+
+      "Hoy.\nMañana.\nSiempre.",
+    letter:
+      "No prometo perfección,\n"+
+      "pero sí amor real.\n\n"+
+      "No prometo caminos fáciles,\n"+
+      "pero sí mi mano.\n\n"+
+      "Gracias por ser mi hogar.\n\n"+
+      "Te amo."
+  },
+  alone:{
+    img:"sola.jpg",
+    sceneText:"A veces caminar sola también es valentía 🌙",
+    reflection:
+      "Aunque elijas caminar sola,\n"+
+      "te agradezco cada momento vivido.",
+    letter:
+      "Gracias por todo lo compartido.\n\n"+
+      "Por cada risa,\n"+
+      "cada enseñanza,\n"+
+      "y cada recuerdo.\n\n"+
+      "Siempre tendrás un lugar bonito\n"+
+      "en mi historia."
+  }
+};
+
+function startGame(){
+  happy.currentTime=0;
+  happy.play();
+  next('s2');
+}
+
+function next(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function choose(type){
+  choice=type;
+
+  if(type==="alone"){
+    happy.pause();
+    sad.currentTime=0;
+    sad.play();
+  }
+
+  document.getElementById("sceneImg").src=texts[type].img;
+  document.getElementById("sceneText").innerText=texts[type].sceneText;
+  document.getElementById("reflection").innerText=texts[type].reflection;
+
+  i=0;
+  writing=false;
+  document.getElementById("letter").innerText="";
+
+  next('s5');
+}
+
+function typeLetter(){
+  if(writing) return;
+  writing=true;
+
+  const text=texts[choice].letter;
+  function write(){
+    if(i<text.length){
+      document.getElementById("letter").innerText+=text.charAt(i);
+      i++;
+      setTimeout(write,55);
+    }
+  }
+  write();
+}
+
+document.getElementById("s7").addEventListener("click",typeLetter);
+
+// ✨ partículas románticas
+const icons=["❤️","✨","💫","🤍"];
+setInterval(()=>{
+  const p=document.createElement("div");
+  p.className="particle";
+  p.innerText=icons[Math.floor(Math.random()*icons.length)];
+  p.style.left=Math.random()*100+"vw";
+  p.style.fontSize=(16+Math.random()*28)+"px";
+  p.style.animationDuration=(6+Math.random()*4)+"s";
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),10000);
+},260);
+</script>
+
+</body>
+</html>
